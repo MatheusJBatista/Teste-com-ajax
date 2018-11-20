@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  </head>
+  <body>
+    <form class="" action="index.html" method="post">
+      <input type="text">
+      <button type="button">Salvar</button>
+    </form>
+    <select class="arvore" name=""></select>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $.ajax({
+          type:"GET",
+          url:"http://localhost:8000/getAll",
+          dataType:"json"
+        })
+        .done(function (retorno) {
+          for (var i = 0; i < retorno.length; i++) {
+            var texto = $('select').html()+"<option value='"+retorno[i].id+"'>"+retorno[i].nome+"</option>";
+            $('select').html(texto)
+          }
+        })
+        $('button').click(function () {
+          if ($('input').val().length <= 5000) {
+            $.ajax({
+              type: "POST",
+              url: "http://localhost:8000/",
+              data: {name:$('input').val()}
+            })
+            .done(function (retorno) {
+              if (retorno) {
+                console.log(retorno);
+                $.ajax({
+                  type: "GET",
+                  url: "http://localhost:8000/getAll",
+                  dataType: "json"
+                })
+                .done(function (retorno) {
+                  for (var i = 0; i < retorno.length; i++) {
+                    var texto = "<option value='"+retorno[i].id+"'>"+retorno[i].nome+"</option>" + texto;
+                    $('select').html(texto)
+                  }
+                })
+              }
+            })
+            // $.post("/",{teste:$('select.arvore').val()},function (data) {
+            //   console.log(data);
+            // })
+          }
+          else {
+            console.log('vai da nao em');
+          }
+        })
+      })
+    </script>
+  </body>
+</html>
